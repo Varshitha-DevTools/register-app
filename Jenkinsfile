@@ -60,7 +60,7 @@ pipeline {
         stage("Build & Push Docker Image") {
             steps {
                 script {
-                    docker.withRegistry('',dockerhub-creds) {
+                    docker.withRegistry('','dockerhub-creds') {
                         docker_image = docker.build "${IMAGE_NAME}"
                     }
 
