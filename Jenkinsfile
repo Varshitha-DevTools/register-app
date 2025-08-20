@@ -7,14 +7,8 @@ pipeline {
     environment {
 	    APP_NAME = "register-app-pipeline"
             RELEASE = "1.0.0"
-<<<<<<< HEAD
-            DOCKER_USER = "varshithag30"
-            DOCKER_PASS = 'dckr_pat_tItD9Pq1MhRtqIWD3SfFRi7yvEA'
-            IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
-=======
             DOCKER_CREDENTIALS = credentials("dockerhub-creds")
             IMAGE_NAME = "${DOCKER_CREDENTIALS_USR}" + "/" + "${APP_NAME}"
->>>>>>> 29ed92c4ec00aea2724e5a3bc661bcfc2ddbddd5
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 	    JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
