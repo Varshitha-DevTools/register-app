@@ -8,7 +8,7 @@ pipeline {
 	    APP_NAME = "register-app-pipeline"
             RELEASE = "1.0.0"
             DOCKER_USER = "varshithag30"
-            DOCKER_PASS = 'VarshithaG@30'
+            DOCKER_PASS = 'dckr_pat_tItD9Pq1MhRtqIWD3SfFRi7yvEA'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 	    JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
