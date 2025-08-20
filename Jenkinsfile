@@ -7,8 +7,14 @@ pipeline {
     environment {
 	    APP_NAME = "register-app-pipeline"
             RELEASE = "1.0.0"
+<<<<<<< HEAD
+            DOCKER_USER = "varshithag30"
+            DOCKER_PASS = 'dckr_pat_tItD9Pq1MhRtqIWD3SfFRi7yvEA'
+            IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+=======
             DOCKER_CREDENTIALS = credentials("dockerhub-creds")
             IMAGE_NAME = "${DOCKER_CREDENTIALS_USR}" + "/" + "${APP_NAME}"
+>>>>>>> 29ed92c4ec00aea2724e5a3bc661bcfc2ddbddd5
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
 	    JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
@@ -90,5 +96,27 @@ pipeline {
           }
        }
 
+       stage("Trigger CD Pipeline") {
+            steps {
+                script {
+                    sh "curl -v -k --user admin:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' '48.214.144.64:8080/job/Deployment/buildWithParameters?token=Org'"
+                }
+            }
+       }
     }
-}      
+
+    post {
+       failure {
+             emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
+                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
+                      mimeType: 'text/html',to: "varshithag@devtools.in"
+      }
+      success {
+            emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
+                     subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
+                     mimeType: 'text/html',to: "varshithag@devtools.in"
+
+        }
+    } 
+
+}
