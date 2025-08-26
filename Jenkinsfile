@@ -51,12 +51,13 @@ pipeline {
                             -Dsonar.projectKey=game-app_demo-app \\
                             -Dsonar.organization=game-app \\
                             -Dsonar.token=$SONAR_TOKEN \\
-                            -Dsonar.sources=. \\
+                            -Dsonar.sources=src/main/java \\
+                            -Dsonar.java.binaries=target/classes \\
                             -Dsonar.host.url=https://sonarcloud.io
                     """
                 }
             }
-        }
+       }        
 
 
 
