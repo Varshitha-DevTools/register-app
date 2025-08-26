@@ -43,32 +43,32 @@ pipeline {
            }
        }
 
-       stage('SonarCloud Scan') {
-            steps {
-                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        sonar-scanner \\
-                            -Dsonar.projectKey=game-app_demo-app \\
-                            -Dsonar.organization=game-app \\
-                            -Dsonar.token=$SONAR_TOKEN \\
-                            -Dsonar.sources=src/main/java \\
-                            -Dsonar.java.binaries=target/classes \\
-                            -Dsonar.host.url=https://sonarcloud.io
-                    """
-                }
-            }
-       }        
+    //    stage('SonarCloud Scan') {
+    //         steps {
+    //             withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+    //                 sh """
+    //                     sonar-scanner \\
+    //                         -Dsonar.projectKey=game-app_demo-app \\
+    //                         -Dsonar.organization=game-app \\
+    //                         -Dsonar.token=$SONAR_TOKEN \\
+    //                         -Dsonar.sources=src/main/java \\
+    //                         -Dsonar.java.binaries=target/classes \\
+    //                         -Dsonar.host.url=https://sonarcloud.io
+    //                 """
+    //             }
+    //         }
+    //    }        
 
 
 
-       stage("Quality Gate"){
-           steps {
-               script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
-                }	
-            }
+    //    stage("Quality Gate"){
+    //        steps {
+    //            script {
+    //                 waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
+    //             }	
+    //         }
 
-        }
+    //     }
 
         stage("Build & Push Docker Image") {
             steps {
