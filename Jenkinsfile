@@ -10,7 +10,10 @@ pipeline {
             DOCKER_CREDENTIALS = credentials("dockerhub-creds")
             IMAGE_NAME = "${DOCKER_CREDENTIALS_USR}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-	    JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
+            JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
+            WS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account ID
+            AWS_REGION = 'us-east-1'             // Replace with your AWS region
+            ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
     }
     stages{
         stage("Cleanup Workspace"){
@@ -73,6 +76,26 @@ pipeline {
 
        }
 
+        stage("Push to AWS ECR") {
+            steps {
+                script {
+                    // Authenticate with ECR
+                    sh """
+                        aws ecr get-login-password --region ${AWS_REGION} \
+                        | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                    """
+
+                    // Tag Docker image for ECR
+                    sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ECR_REPO}:${IMAGE_TAG}"
+                    sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ECR_REPO}:latest"
+
+                    // Push image to ECR
+                    sh "docker push ${ECR_REPO}:${IMAGE_TAG}"
+                    sh "docker push ${ECR_REPO}:latest"
+                }
+            }
+        }    
+
        stage("Trivy Scan") {
            steps {
                script {
@@ -99,18 +122,58 @@ pipeline {
        }
     }
 
-    post {
-       failure {
-             emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
-                      subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed", 
-                      mimeType: 'text/html',to: "varshithag@devtools.in"
-      }
-      success {
-            emailext body: '''${SCRIPT, template="groovy-html.template"}''', 
-                     subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful", 
-                     mimeType: 'text/html',to: "varshithag@devtools.in"
+     post {
+    failure {
+    emailext (
+        body: """
+            <h3>Build Failed</h3>
+            <p>Job: ${env.JOB_NAME}</p>
+            <p>Build Number: ${env.BUILD_NUMBER}</p>
+            <p>Status: FAILURE</p>
+        """,
+        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - Failed",
+        mimeType: 'text/html',
+        to: "varshithag@devtools.in"
+    )
 
-        }
-    } 
 
+        // Create GitHub Issue
+        script {
+            withCredentials([string(credentialsId: 'GitHub', variable: 'GITHUB_TOKEN')]) {
+                def repoOwner = 'Varshitha-DevTools'   
+                def repoName = 'test'                 
+                def issueTitle = "Jenkins Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                def issueBody = """\
+                    Build URL: ${env.BUILD_URL}
+                    Job: ${env.JOB_NAME}
+                    Build Number: ${env.BUILD_NUMBER}
+                    Result: FAILURE
+                    Please check the Jenkins console output for details.
+                    """.stripIndent()
+
+                def jsonPayload = groovy.json.JsonOutput.toJson([
+                    title: issueTitle,
+                    body: issueBody
+                ])
+
+                // Use single quotes and shell variable to avoid secret leakage in logs
+                sh """
+                curl -s -H "Authorization: token \$GITHUB_TOKEN" \\
+                     -H "Accept: application/vnd.github.v3+json" \\
+                     -X POST \\
+                     -d '${jsonPayload}' \\
+                     https://api.github.com/repos/${repoOwner}/${repoName}/issues
+                """
+            }
+        }    
+    }
+    
+    success {
+    emailext (
+        body: "Job: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nStatus: SUCCESS",
+        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - Successful",
+        to: "varshithag@devtools.in"
+    )
+}
+}
 }
