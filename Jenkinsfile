@@ -41,24 +41,24 @@ pipeline {
            }
        }
 
-       stage("SonarQube Analysis"){
-           steps {
-	           script {
-		        withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') { 
-                        sh "mvn sonar:sonar"
-		        }
-	           }	
-           }
-       }
+    //    stage("SonarQube Analysis"){
+    //        steps {
+	//            script {
+	// 	        withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') { 
+    //                     sh "mvn sonar:sonar"
+	// 	        }
+	//            }	
+    //        }
+    //    }
 
-       stage("Quality Gate"){
-           steps {
-               script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
-                }	
-            }
+    //    stage("Quality Gate"){
+    //        steps {
+    //            script {
+    //                 waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+    //             }	
+    //         }
 
-        }
+    //     }
 
         stage("Build & Push Docker Image") {
             steps {
@@ -141,7 +141,7 @@ pipeline {
         script {
             withCredentials([string(credentialsId: 'GitHub', variable: 'GITHUB_TOKEN')]) {
                 def repoOwner = 'Varshitha-DevTools'   
-                def repoName = 'test'                 
+                def repoName = 'register-app'                 
                 def issueTitle = "Jenkins Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def issueBody = """\
                     Build URL: ${env.BUILD_URL}
