@@ -11,7 +11,7 @@ pipeline {
             IMAGE_NAME = "${DOCKER_CREDENTIALS_USR}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
             JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
-            WS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account ID
+            AWS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account ID
             AWS_REGION = 'us-east-1'             // Replace with your AWS region
             ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
     }
