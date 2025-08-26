@@ -16,6 +16,10 @@
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
   </properties>
 
+  <properties>
+  <sonar.organization>varshitha-devtools</sonar.organization>
+  </properties>
+
   <modules>
     <module>server</module>
     <module>webapp</module>
