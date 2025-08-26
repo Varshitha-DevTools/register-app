@@ -44,14 +44,18 @@ pipeline {
        stage('SonarCloud Scan') {
             steps {
                 withCredentials([string(credentialsId: 'SonarToken', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        sonar-scanner \\
-                            -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
-                            -Dsonar.organization=varshitha-devtools \\
-                            -Dsonar.token=$SONAR_TOKEN \\
-                            -Dsonar.sources=. \\
-                            -Dsonar.host.url=https://sonarcloud.io
-                    """
+                    withSonarQubeEnv('YourSonarQubeName') {
+                sh """
+                    sonar-scanner \
+                    -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \
+                    -Dsonar.organization=varshitha-devtools \
+                    -Dsonar.token=$SONAR_TOKEN \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=https://sonarcloud.io \
+                    -Dsonar.java.binaries=server/target/classes
+                """
+                }
+
                 }
             }
         }
