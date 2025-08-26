@@ -44,7 +44,7 @@ pipeline {
        }
 
     //    stage('SonarCloud Scan') {
-    //         steps {
+    // //         steps {
     //             withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
     //                 sh """
     //                     sonar-scanner \\
