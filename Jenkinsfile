@@ -14,6 +14,7 @@ pipeline {
             AWS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account 
             AWS_REGION = 'us-east-1'             // Replace with your AWS region
             ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
+            
     }
     stages{
         stage("Cleanup Workspace"){
@@ -44,18 +45,14 @@ pipeline {
        stage('SonarCloud Scan') {
             steps {
                 withCredentials([string(credentialsId: 'SonarToken', variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv('YourSonarQubeName') {
-                sh """
-                    sonar-scanner \
-                    -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \
-                    -Dsonar.organization=varshitha-devtools \
-                    -Dsonar.token=$SONAR_TOKEN \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=https://sonarcloud.io \
-                    -Dsonar.java.binaries=server/target/classes
-                """
-                }
-
+                    sh """
+                        sonar-scanner \
+                            -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \
+                            -Dsonar.organization=varshitha-devtools \
+                            -Dsonar.token=$SONAR_TOKEN \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=https://sonarcloud.io
+                    """
                 }
             }
         }
