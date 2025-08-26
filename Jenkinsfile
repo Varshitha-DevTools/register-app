@@ -14,6 +14,7 @@ pipeline {
             AWS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account 
             AWS_REGION = 'us-east-1'             // Replace with your AWS region
             ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
+            SONAR_TOKEN= 'ccda7df318392613d3a4425fcccb7dc7256cfb49'
             
     }
     stages{
@@ -43,20 +44,19 @@ pipeline {
        }
 
        stage('SonarCloud Scan') {
-    steps {
-        withCredentials([string(credentialsId: 'SonarToken', variable: 'SONAR_TOKEN')]) {
-            sh """
-                sonar-scanner \
-                    -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \
-                    -Dsonar.organization=varshitha-devtools \
-                    -Dsonar.token=$SONAR_TOKEN \
-                    -Dsonar.sources=. \
-                    -Dsonar.java.binaries=target/classes \
-                    -Dsonar.host.url=https://sonarcloud.io
-            """
+            steps {
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                        sonar-scanner \\
+                            -Dsonar.projectKey=game-app_demo-app \\
+                            -Dsonar.organization=game-app \\
+                            -Dsonar.token=$SONAR_TOKEN \\
+                            -Dsonar.sources=. \\
+                            -Dsonar.host.url=https://sonarcloud.io
+                    """
+                }
+            }
         }
-    }
-}
 
 
 
