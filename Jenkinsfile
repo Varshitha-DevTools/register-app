@@ -42,31 +42,25 @@ pipeline {
            }
        }
 
-    //     stage('SonarCloud Scan') {
-    //         steps {
-    //             withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-    //                 sh """
-    //                     sonar-scanner \\
-    //                         -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
-    //                         -Dsonar.organization=varshitha-devtools \\
-    //                         -Dsonar.token=$SONAR_TOKEN \\
-    //                         -Dsonar.sources=. \\
-    //                         -Dsonar.host.url=https://sonarcloud.io
-    //                 """
-    //             }
-    //         }
-    //    }        
+    stage("SonarQube Analysis"){
+           steps {
+	           script {
+		        withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') { 
+                        sh "mvn sonar:sonar"
+		        }
+	           }	
+           }
+       }
 
 
+        stage("Quality Gate"){
+           steps {
+               script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
+                }	
+            }
 
-        // stage("Quality Gate"){
-        //    steps {
-        //        script {
-        //             waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
-        //         }	
-        //     }
-
-        // }
+        }
 
         stage("Build & Push Docker Image") {
             steps {
