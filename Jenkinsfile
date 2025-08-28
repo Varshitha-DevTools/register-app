@@ -29,34 +29,21 @@ pipeline {
                 }
         }
 
-        stage("Build Application"){
-            steps {
-                sh "mvn clean package"
-            }
-
-       }
-
-       stage("Testing Application"){
-           steps {
-                 sh "mvn test"
-           }
-       }
-
         stage('SonarCloud Scan') {
             steps {
                 withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-                    sh """
-                        sonar-scanner \\
-                            -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
-                            -Dsonar.organization=varshitha-devtools \\
-                            -Dsonar.token=$SONAR_TOKEN \\
-                            -Dsonar.sources=. \\
-                            -Dsonar.host.url=https://sonarcloud.io
-                    """
+                sh """
+                    sonar-scanner \\
+                        -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
+                        -Dsonar.organization=varshitha-devtools \\
+                        -Dsonar.token=$SONAR_TOKEN \\
+                        -Dsonar.sources=. \\
+                        -Dsonar.java.binaries=target/classes \\
+                        -Dsonar.host.url=https://sonarcloud.io
+                """
                 }
             }
-       }        
-
+        }
 
 
         stage("Quality Gate"){
