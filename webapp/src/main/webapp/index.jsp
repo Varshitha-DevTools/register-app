@@ -89,7 +89,7 @@
  
   <h1>About DevTools</h1>
   <div class="about">
-    <p><strong>DevTools</strong> is a modern DevSecOps service company providing expertise with ServiceNow, DevRev, GitHub, JFrog, Jenkins, AWS, Octopus Deploy, and more.</p>
+    <p><strong>DevTools</strong> is a modern DevSecOps service company providing expertise with ServiceNow, DevRev, GitHub, JFrog, Jenkins, AWS, Octopus Deploy.</p>
     <p>We help teams streamline development, automate deployment, and accelerate digital transformation.</p>
     <p><strong>Create your account below to get started.</strong></p>
   </div>
