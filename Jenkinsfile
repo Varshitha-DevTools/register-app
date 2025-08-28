@@ -14,7 +14,7 @@ pipeline {
             AWS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account 
             AWS_REGION = 'us-east-1'             // Replace with your AWS region
             ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
-            SONAR_TOKEN= '668283a7313ecb00faab9084cb99faf2e4ed5599'
+            SONAR_TOKEN= '7df0a1e18c44780404f64bec08eb612a862b12bf'
             
     }
     stages{
@@ -51,7 +51,7 @@ pipeline {
                             -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
                             -Dsonar.organization=varshitha-devtools \\
                             -Dsonar.token=$SONAR_TOKEN \\
-                            -Dsonar.sources=src/main/java \\
+                            -Dsonar.sources=. \\
                             -Dsonar.java.binaries=target/classes \\
                             -Dsonar.host.url=https://sonarcloud.io
                     """
