@@ -43,8 +43,8 @@ pipeline {
            }
        }
 
-       stage('SonarCloud Scan') {
-    //         steps {
+        stage('SonarCloud Scan') {
+            steps {
                 withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
                     sh """
                         sonar-scanner \\
@@ -61,14 +61,14 @@ pipeline {
 
 
 
-    //    stage("Quality Gate"){
-    //        steps {
-    //            script {
-    //                 waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
-    //             }	
-    //         }
+        stage("Quality Gate"){
+           steps {
+               script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
+                }	
+            }
 
-    //     }
+        }
 
         stage("Build & Push Docker Image") {
             steps {
