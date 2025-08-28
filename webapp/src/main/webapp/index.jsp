@@ -53,7 +53,7 @@
   }
   .partner-block:hover {
     transform: translateY(-5px);
-    background: #de1bec;
+    background: #1becc9;
   }
   .partner-logo {
     max-width: 80px;
