@@ -14,7 +14,7 @@ pipeline {
             AWS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account 
             AWS_REGION = 'us-east-1'             // Replace with your AWS region
             ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
-            SONAR_TOKEN= 'ccda7df318392613d3a4425fcccb7dc7256cfb49'
+            SONAR_TOKEN= '668283a7313ecb00faab9084cb99faf2e4ed5599'
             
     }
     stages{
@@ -43,21 +43,21 @@ pipeline {
            }
        }
 
-    //    stage('SonarCloud Scan') {
-    // //         steps {
-    //             withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-    //                 sh """
-    //                     sonar-scanner \\
-    //                         -Dsonar.projectKey=game-app_demo-app \\
-    //                         -Dsonar.organization=game-app \\
-    //                         -Dsonar.token=$SONAR_TOKEN \\
-    //                         -Dsonar.sources=src/main/java \\
-    //                         -Dsonar.java.binaries=target/classes \\
-    //                         -Dsonar.host.url=https://sonarcloud.io
-    //                 """
-    //             }
-    //         }
-    //    }        
+       stage('SonarCloud Scan') {
+    //         steps {
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                        sonar-scanner \\
+                            -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
+                            -Dsonar.organization=varshitha-devtools \\
+                            -Dsonar.token=$SONAR_TOKEN \\
+                            -Dsonar.sources=src/main/java \\
+                            -Dsonar.java.binaries=target/classes \\
+                            -Dsonar.host.url=https://sonarcloud.io
+                    """
+                }
+            }
+       }        
 
 
 
@@ -132,19 +132,14 @@ pipeline {
        }
     }
 
-     post {
-    failure {
-    emailext (
-        body: """
-            <h3>Build Failed</h3>
-            <p>Job: ${env.JOB_NAME}</p>
-            <p>Build Number: ${env.BUILD_NUMBER}</p>
-            <p>Status: FAILURE</p>
-        """,
-        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - Failed",
-        mimeType: 'text/html',
-        to: "varshithag@devtools.in"
-    )
+    post {
+        failure {
+            emailext(
+                body: '''${SCRIPT, template="groovy-html.template"}''',
+                subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Failed",
+                mimeType: 'text/html',
+                to: "varshithag303@gmail.com"
+            )
 
 
         // Create GitHub Issue
@@ -179,11 +174,13 @@ pipeline {
     }
     
     success {
-    emailext (
-        body: "Job: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nStatus: SUCCESS",
-        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - Successful",
-        to: "varshithag@devtools.in"
-    )
+            emailext(
+                body: '''${SCRIPT, template="groovy-html.template"}''',
+                subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful",
+                mimeType: 'text/html',
+                to: "botuser.1411@gmail.com"
+            )
+        
 }
 }
 }
