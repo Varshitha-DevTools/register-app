@@ -39,7 +39,7 @@
     margin-bottom: 60px;
   }
   .partner-block {
-    background: #d03ee7;
+    background: #27b8e9;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(30, 13, 162, 0.5);
     width: 140px;
