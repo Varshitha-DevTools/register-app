@@ -11,8 +11,8 @@ pipeline {
             IMAGE_NAME = "${DOCKER_CREDENTIALS_USR}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
             JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
-            AWS_ACCOUNT_ID = '807860707312'      // Replace with your AWS account 
-            AWS_REGION = 'us-east-1'             // Replace with your AWS region
+            AWS_ACCOUNT_ID = '807860707312'      
+            AWS_REGION = 'us-east-1'             
             ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/register-app-repo"
             
     }
@@ -29,30 +29,45 @@ pipeline {
                 }
         }
 
-        // stage('SonarCloud Scan') {
-        //     steps {
-        //         withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
-        //         sh """
-        //             sonar-scanner \\
-        //                 -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
-        //                 -Dsonar.organization=varshitha-devtools \\
-        //                 -Dsonar.token=$SONAR_TOKEN \\
-        //                 -Dsonar.sources=. \\
-        //                 -Dsonar.java.binaries=target/classes \\
-        //                 -Dsonar.host.url=https://sonarcloud.io
-        //         """
-        //         }
-        //     }
-        // }
+        stage("Build Application"){
+            steps {
+                sh "mvn clean package"
+            }
+
+       }
+
+       stage("Testing Application"){
+           steps {
+                 sh "mvn test"
+           }
+       }
+
+        stage('SonarCloud Scan') {
+            steps {
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                        sonar-scanner \\
+                            -Dsonar.projectKey=varshitha-devtools_jenkins-pipeline \\
+                            -Dsonar.organization=varshitha-devtools \\
+                            -Dsonar.token=$SONAR_TOKEN \\
+                            -Dsonar.sources=. \\
+                            -Dsonar.host.url=https://sonarcloud.io
+                    """
+                }
+            }
+       }        
 
 
-        // stage("Quality Gate"){
-        //    steps {
-        //        script {
-        //             waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
-        //         }	
-        //     }
- 
+
+        stage("Quality Gate"){
+           steps {
+               script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'SonarToken'
+                }	
+            }
+
+        }
+
         stage("Build & Push Docker Image") {
             steps {
                 script {
@@ -161,7 +176,7 @@ pipeline {
                 body: '''${SCRIPT, template="groovy-html.template"}''',
                 subject: "${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - Successful",
                 mimeType: 'text/html',
-                to: "botuser.1411@gmail.com"
+                to: "varshithag303@gmail.com"
             )
         
 }
