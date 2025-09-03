@@ -60,7 +60,7 @@
     margin-bottom: 12px;
   }
   .register-btn {
-    background-color: #2979FF;
+    background-color: #092d6b;
     color: #FFFFFF;
     padding: 15px 40px;
     border: none;
@@ -129,7 +129,7 @@
  
   <footer>
     Thank You<br>
-    DevTools — Empowering Digital Transformation.
+    DevTools — Empowering Digital Transformation
   </footer>
  
 </body>
